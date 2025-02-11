@@ -38,6 +38,6 @@ print(result)
 data = b'\xff\x03\x01\x03\x01\x01\x00'
 result = byte_frequency_analysis(data)
 print(result)
-# Expected output: [1, 3, 0, 2]
+# Expected output: [1, 3, 0, 255]
 
 
