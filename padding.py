@@ -1,4 +1,13 @@
-def keyPadding(key: bytes, padding_byte: int = 0x00) -> bytearray:   # Padding will be 0s
+def keyPadding(key: bytes, padding_byte: int = 0x00) -> bytearray:
+    """
+    Pads the inputted key to a length of 1KB. If the key is
+    greater than 1KB, the key will be trimmed to exactly 1KB.
+    Current version (1.0) pads the key with just zeros, but 
+    later implementation will be done with digits of pi.
+    The input should first be converted to a bytestring, not ran
+    as a unicode. E.g: x = b"Hello World"
+    """
+    
     # Create a bytearray from the provided key
     byte_array = bytearray(key)
     
