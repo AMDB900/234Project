@@ -1,3 +1,8 @@
+"""
+References:
+https://www.geeksforgeeks.org/python-strings-encode-method/
+"""
+
 def keyPadding(key: bytes, padding_byte: int = 0x00) -> bytearray:
     """
     Pads the inputted key to a length of 1KB. If the key is
