@@ -59,3 +59,13 @@ data = b'<!DOCTYPE html><html><body><h1>My First Heading</h1><p>My first paragra
 result = byte_frequency_analysis(data)
 print(result)
 # Expected output: [60, 62, 104, 32, 116, 47, 97, 112, 114, 121, 100, 105, 108, 109, 49, 77, 98, 103, 111, 115, 33, 46, 67, 68, 69, 70, 72, 79, 80, 84, 89, 101, 102, 110]
+
+data = '筆記本'.encode()
+result = byte_frequency_analysis(data)
+print(result)
+# Output: [134, 152, 156, 168, 172, 173, 230, 231, 232]
+
+data = '作家'.encode()
+result = byte_frequency_analysis(data)
+print(result)
+# Output: [156, 174, 182, 189, 228, 229]
