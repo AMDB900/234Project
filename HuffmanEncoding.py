@@ -4,6 +4,7 @@ import heapq
 # https://docs.python.org/3/library/collections.html
 import collections
 # Ref: https://www.geeksforgeeks.org/huffman-coding-in-python/
+
 class HuffmanNode:
     def __init__(self, byte, freq):
         self.byte = byte
@@ -61,12 +62,18 @@ def huffman_decode(data, tree):
             decoded_data.append(node.byte)
             node = tree  # Reset to the root of the tree
     return decoded_data
-
+# Helper function to convert string to binary representation for comparison
+def string_to_binary(s):
+    return ' '.join(format(ord(char), '08b') for char in s)
 # Example Usage
 with open("text.txt", "rb") as file:
     data = file.read()  # Read the file only once
+with open("text.txt", "r") as file:
+    string_data = file.read()  # Read the file only once
 encoded_data, tree = huffman_encode(data)
 decoded_data = huffman_decode(encoded_data, tree)
 print("Original:", data)
+print("Original length:", len(string_to_binary(string_data)))
+print("Encoded length:", len(encoded_data))
 print("Encoded:", encoded_data)
 print("Decoded:", decoded_data)
