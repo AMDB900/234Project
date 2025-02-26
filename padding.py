@@ -3,31 +3,54 @@ References:
 https://www.geeksforgeeks.org/python-strings-encode-method/
 """
 
-def keyPadding(key: bytes, padding_byte: int = 0x00) -> bytearray:
-    """
-    Pads the inputted key to a length of 1KB. If the key is
-    greater than 1KB, the key will be trimmed to exactly 1KB.
-    Current version (1.0) pads the key with just zeros, but 
-    later implementation will be done with digits of pi.
-    The input should first be converted to a bytestring, not ran
-    as a unicode. E.g: x = b"Hello World"
-    """
-    
-    # Create a bytearray from the provided key
-    byte_array = bytearray(key)
-    
-    # Check if the length of the key is already 1KB (1024 bytes)
-    if len(byte_array) >= 1024:
-        return byte_array[:1024]  # Trim it to 1KB if it's longer than 1KB
-    
-    # Pad the bytearray with the specified padding byte until it's 1KB long
-    byte_array.extend([padding_byte] * (1024 - len(byte_array)))
-    
-    return byte_array
+import hashlib
 
-# Example usage
-key = b"my_short_key"  # Some example key that's less than 1KB
-padded_key = keyPadding(key)
+def read_pi_digits(file_path):
+    with open(file_path, 'r') as f:
+        pi_digits = f.read()  # Read all digits as a string
+    return pi_digits.replace(".", "").strip()  # Remove the decimal point and any whitespace
 
-#print(padded_key.hex()) # Prints the hexadecimal of the padded key
-print(len(padded_key))  # Should print 1024
+def hash_key(key):
+    # Use SHA-256 hash function to generate a digest of the key
+    key_bytes = key.encode('utf-8') if isinstance(key, str) else key
+    hash_digest = hashlib.sha256(key_bytes).hexdigest()  # Get the hex digest
+    return int(hash_digest, 16)  # Convert hex digest to an integer
+
+def pad_key_with_pi(key, pi_digits, target_length=1024):
+    # Ensure the key is in bytes
+    if isinstance(key, str):
+        key = key.encode('utf-8')
+
+    # Calculate the starting index from the hash of the key
+    start_index = hash_key(key) % len(pi_digits)
+
+    # Pad the key with digits from pi, wrapping around if necessary
+    padding_needed = target_length - len(key)
+    if padding_needed > 0:
+        # Get the relevant digits of pi for padding
+        padding_string = (pi_digits * ((padding_needed // len(pi_digits)) + 1))[start_index:start_index + padding_needed]
+        padding_bytes = padding_string.encode('utf-8')  # Convert padding to bytes
+        key += padding_bytes  # Append padding to the key
+
+    elif padding_needed < 0:
+        key = key[:target_length]  # Truncate the key if it's too long
+
+    return key
+
+# Example usage:
+pi_digits = read_pi_digits('pi_10000_digits.txt')  # Load the pi digits from a file
+key = "my secret key"  # Example key
+padded_key = pad_key_with_pi(key, pi_digits)
+print(padded_key.hex())
+print(len(padded_key))  # This should print 1024 if the padding is correct
+
+def load_and_pad_key_from_file(file_path, pi_digits, target_length=1024):
+    with open(file_path, 'rb') as f:
+        key = f.read()  # Read the key from the file as bytes
+    
+    return pad_key_with_pi(key, pi_digits, target_length)
+
+# Example usage:
+file_key = load_and_pad_key_from_file('Screenshot 2025-02-20 160715.png', pi_digits)
+print(file_key.hex())
+print(len(file_key))  # Should print 1024 if the padding is correct
