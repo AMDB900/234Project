@@ -1,6 +1,7 @@
 """
 References:
 https://www.geeksforgeeks.org/python-strings-encode-method/
+https://www.geeksforgeeks.org/hashlib-module-in-python/
 """
 
 import hashlib
