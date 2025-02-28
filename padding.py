@@ -38,20 +38,21 @@ def pad_key_with_pi(key, pi_digits, target_length=1024):
 
     return key
 
-# Example usage:
-pi_digits = read_pi_digits('pi_10000_digits.txt')  # Load the pi digits from a file
-key = "my secret key"  # Example key
-padded_key = pad_key_with_pi(key, pi_digits)
-print(padded_key.hex())
-print(len(padded_key))  # This should print 1024 if the padding is correct
-
 def load_and_pad_key_from_file(file_path, pi_digits, target_length=1024):
     with open(file_path, 'rb') as f:
         key = f.read()  # Read the key from the file as bytes
     
     return pad_key_with_pi(key, pi_digits, target_length)
-
-# Example usage:
-file_key = load_and_pad_key_from_file('Screenshot 2025-02-20 160715.png', pi_digits)
-print(file_key.hex())
-print(len(file_key))  # Should print 1024 if the padding is correct
+    
+if __name__ == "__main__":
+    # pad_key_with_pi example usage:
+    pi_digits = read_pi_digits('pi_10000_digits.txt')  # Load the pi digits from a file
+    key = "my secret key"  # Example key
+    padded_key = pad_key_with_pi(key, pi_digits)
+    print(padded_key.hex())
+    print(len(padded_key))  # This should print 1024 if the padding is correct
+    
+    # load_and_pad_key_from_file example usage:
+    file_key = load_and_pad_key_from_file('Screenshot 2025-02-20 160715.png', pi_digits)
+    print(file_key.hex())
+    print(len(file_key))  # Should print 1024 if the padding is correct
