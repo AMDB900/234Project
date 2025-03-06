@@ -12,8 +12,11 @@ from HuffmanEncoding import *
     return result"""
 
 def xor(text, key):
-    #if text != 16MB: error
-    offset = 1024
+    # if text != 16MB: error
+    offset = 1024 # Key size, set to 1KB
+    if len(key) != offset:
+        print(f"Error: Key size is {len(key)}B. Key must be {offset}B in size.")
+        exit()
     i = 0
     result = b''
     while i < len(text):
@@ -69,7 +72,7 @@ if __name__ == "__main__":
     
     
     ## Real Test Input (2 = 2MB random numbers)
-    f = open("2", "rb")
+    f = open("test_input/2", "rb")
     file = f.read()
     print(f"File: {len(file)}B: {file}")
 
