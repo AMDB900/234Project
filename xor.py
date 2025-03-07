@@ -17,14 +17,10 @@ def xor(text, key):
     if len(key) != offset:
         print(f"Error: Key size is {len(key)}B. Key must be {offset}B in size.")
         exit()
-    i = 0
-    result = b''
-    while i < len(text):
-        result += bytes(a ^ b for a, b in zip(text[i:i + offset], key))
-        i += offset
-    return result
+    return bytes(text[i] ^ key[i % offset] for i in range(len(text)))
 
 if __name__ == "__main__":
+    """
     ## xor functionality testing
     # Padded key 
     pi_digits = read_pi_digits('pi_10000_digits.txt')  # Load the pi digits from a file
@@ -69,10 +65,13 @@ if __name__ == "__main__":
     print(f"Encrypted: {encrypted_text}")
     decrypted_text = xor(encrypted_text, file_key)
     print(f"Decrypted: {decrypted_text}\n")
-    
+    """
+
+    pi_digits = read_pi_digits('pi_10000_digits.txt')
+    padded_key = load_and_pad_key_from_file('Screenshot 2025-02-20 160715.png', pi_digits)
     
     ## Real Test Input (2 = 2MB random numbers)
-    f = open("test_input/2", "rb")
+    f = open("test_input/1.docx", "rb")
     file = f.read()
     print(f"File: {len(file)}B: {file}")
 
@@ -97,14 +96,24 @@ if __name__ == "__main__":
     with open("text.khn", "w") as file:
         file.write(encoded_data)
 
-    print(f"Original {len(data)}B:", data)
-    print("Original length:", len(string_to_binary(string_data)))
+    #print(f"Original:", data)
+    #print("Original size:", len(data))
+    #print(f"> XOR: ", encrypted)
 
-    print("Encoded length:", len(encoded_data))
-    print("Encoded:", encoded_data)
+    #print("Encoded:", encoded_data)
+    #print("Encoded size:", len(encoded_data))
 
-    # Perform Huffman decoding 
+    # Perform Huffman decoding
     decoded_data = huffman_decode(encoded_data, tree)
+    #print("Decoded:", decoded_data)
     # XOR the decoded data against the file
     decrypted = xor(decoded_data, key)
-    print(f"Decoded {len(decoded_data)}B: ", decrypted)
+    #print(f"< XOR: ", decrypted)
+    #print("Decrypted size:", len(decrypted))
+    
+    if encrypted == decoded_data:
+        print("Success: Decoded Data = XOR'd Data")
+    if decrypted == data:
+        print("Success: Original Data = Decrypted Data")
+
+
