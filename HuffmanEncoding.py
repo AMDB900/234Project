@@ -70,8 +70,8 @@ def huffman_encode(data):
         print("Error: missing bytes:", set(missing_bytes))
         exit()
     encoded_data = "".join(huffman_codes[byte] for byte in data)
-    for char, code in huffman_codes.items():
-        print(f"Character: {char}, Code: {code}")
+    #for char, code in huffman_codes.items():
+     #   print(f"Character: {char}, Code: {code}")
 
     return encoded_data, root  # Return encoded data and tree for decoding
 
@@ -92,11 +92,13 @@ def huffman_decode(data, tree):
 # Function to get the file name from the user
 # Ref: https://www.geeksforgeeks.org/python-list-files-in-a-directory/
 def get_file():
+
     # List all files in the current directory
-    files = [f for f in os.listdir() if os.path.isfile(f)]
+    files = [f for f in os.listdir("test_input") if os.path.isfile(os.path.join("test_input", f))]
     content = []
     if not files:
         print("No files found in the directory.")
+        exit()
     else:
         for i, file in enumerate(files):
             print(f"{i + 1}: {file}")
@@ -114,7 +116,7 @@ def get_file():
         filename = files[choice]
 
         # Read and print file content
-        with open(filename, 'rb') as f:
+        with open(os.path.join("test_input", filename), 'rb') as f:
             content = f.read()
             print(f"Loading: {filename} ...\n")
     
@@ -123,26 +125,6 @@ def get_file():
 # Helper function to convert string to binary representation for comparison
 def string_to_binary(s):
     return ' '.join(format(ord(char), '08b') for char in s)
-
-def xor_byte_encrpyt(text, key):
-    """
-    Performs XOR operation on input string and a key.
-
-    Args:
-        text: input file, string or bytes/bytearray.
-        key: 1KB string or bytes/bytearray.
-
-    Returns:
-        result: String or bytearray containing the XOR result of corresponding bytes.
-                     Returns None if arrays are not of the same length.
-    """
-    if len(text) != len(key):
-        return None
-    
-    result = ''
-    for i in range(len(text)):
-        result += chr(ord(text[i]) ^ key[i % len(key)])
-    return result
 
 if __name__ == "__main__":
     print("Select a file to encrypt:")
