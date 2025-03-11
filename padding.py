@@ -58,26 +58,26 @@ class CustomRandom:
         self.state = (self.a * self.state + self.c) % self.m
         return self.state & 0xFF  # Return a byte (0-255)
 
-def create_linear_array(input_file_path, seed=12345):
+def pad_file(input_file_path, seed=12345):
     # Read the content of the input file
     with open(input_file_path, 'rb') as file:
         file_content = file.read()
-
+    
+    if len(file_content) > (12 * 1024 * 1024): # 12 MB
+        print(f"Error: File size is {len(file_content)}B. File must be less than {12 * 1024 * 1024}B in size.")
+        exit()
+    
     # Extract the length of the string (4 bytes)
     content_length = len(file_content)
     
     # Get the file suffix (file extension)
     file_suffix = os.path.splitext(input_file_path)[1].encode('utf-8')  # Ensure it's a byte string
-
-    # Initialize an array (list in Python)
-    linear_array = bytearray()
-
-    # Append the 4-byte length of the content
-    linear_array.extend(content_length.to_bytes(4, byteorder='little'))
-
-    # Append the file suffix
-    linear_array.extend(file_suffix)
-
+    while len(file_suffix) < 5: # Pad the extension to 5 bytes (covers .docx)
+        file_suffix = file_suffix + b'0'
+        
+    # Append the 4-byte length of the content and file suffix
+    linear_array = bytearray(content_length.to_bytes(4, byteorder='little') + file_suffix + file_content)
+    
     # Initialize the custom random number generator with a seed
     rng = CustomRandom(seed)
 
@@ -87,17 +87,33 @@ def create_linear_array(input_file_path, seed=12345):
     
     # If the current size is less than 16MB, we need to pad
     padding_needed = total_size - current_size
-
-    if padding_needed > 0:
-        # Pad with random bytes from the file content using our custom random generator
-        for _ in range(padding_needed):
-            random_byte = rng.next()  # Get the next "random" byte
-            linear_array.append(random_byte)
+    # Pad with random bytes from the file content using our custom random generator
+    for _ in range(padding_needed):
+       random_byte = rng.next()  # Get the next "random" byte
+       linear_array.append(random_byte)
 
     # Ensure the final array size is exactly 16MB
     assert len(linear_array) == total_size
 
-    return linear_array
+    return bytes(linear_array)
+
+def return_original_file(content):
+    # Extract the length of the string (4 bytes)
+    content_length = content[0:4]
+    length = int.from_bytes(content_length, byteorder='little')
+    
+    # Get the file suffix (file extension)
+    file_suffix = content[4:9]
+    suffix = file_suffix.split(b'0')[0]
+
+    # Gather file data based on length of the string
+    data = content[9:9 + length]
+
+    text = "output.khn" + suffix.decode()
+    with open(text, "wb") as file:
+        file.write(data)
+    
+    return data
 
     
 if __name__ == "__main__":
@@ -115,8 +131,10 @@ if __name__ == "__main__":
     print(len(file_key))  # Should print 1024 if the padding is correct
 
     # Example usage for 
-    input_file_path = 'Screenshot 2025-02-20 160715.png'  # Replace with your file path
-    linear_array = create_linear_array(input_file_path)
+    input_file_path = 'test_input/6.png'  # Replace with your file path
+    linear_array = pad_file(input_file_path)
 
     # Output file should be 16MB with the data as described
     print(f"Linear array created with size: {len(linear_array)} bytes")
+    print(return_original_file(linear_array))
+
