@@ -112,7 +112,6 @@ def return_original_file(content):
     
     return data
 
-    
 if __name__ == "__main__":
     
     # pad_key_with_pi example usage:
