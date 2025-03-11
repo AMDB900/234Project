@@ -4,11 +4,15 @@ from byte_frequency_analysis import *
 from HuffmanEncoding import *
 
 def xor(text, key):
-    # if text != 16MB: error
+    if len(text) != (16 * 1024 * 1024): # File size set to 16MB
+        print(f"Error: File size is {len(text)}B. File must be {16 * 1024 * 1024}B in size")
+        exit()
+        
     offset = 1024 # Key size, set to 1KB
     if len(key) != offset:
         print(f"Error: Key size is {len(key)}B. Key must be {offset}B in size.")
         exit()
+        
     return bytes(text[i] ^ key[i % offset] for i in range(len(text)))
 
 if __name__ == "__main__":
@@ -23,7 +27,7 @@ if __name__ == "__main__":
 
     string_data = data.decode('utf-8', errors='ignore')
 
-    print("Original:", data)
+    #print("Original:", data)
     print("Original size:", len(data))
     print()
 
@@ -49,7 +53,7 @@ if __name__ == "__main__":
     encryption_time = huffman_time + fxor_time
     print(f"Total encryption time ------- {encryption_time:.4f} seconds")
     
-    print("\nEncrypted:", encoded_data)
+    #print("\nEncrypted:", encoded_data)
     print("Encrypted size:", len(encoded_data))
     
     #with open("text.khn", "w") as file:
@@ -81,10 +85,20 @@ if __name__ == "__main__":
     decryption_time = rxor_time + decode_time
     print(f"Total decryption time ------- {decryption_time:.4f} seconds")
     
-    print("\nDecrypted:", decrypted)
+    #print("\nDecrypted:", decrypted)
     print("Decrypted size:", len(decrypted))
     
     if encrypted == decoded_data:
         print("\nSuccess: Decoded Data = XOR'd Data")
     if decrypted == data:
         print("Success: Original Data = Decrypted Data")
+        
+    print("\nExtracting file size and suffix / Removing padding...", end='')
+    
+    start_time = time.perf_counter()
+    og = return_original_file(decrypted)
+    end_time = time.perf_counter()
+    
+    extract_time = end_time - start_time
+    print(f" {extract_time:.4f} seconds")
+    print("Extracted size:", len(og))

@@ -6,6 +6,7 @@ import heapq
 # https://docs.python.org/3/library/collections.html
 from collections import Counter
 # Ref: https://www.geeksforgeeks.org/huffman-coding-in-python/
+from padding import *
 
 class HuffmanNode:
     # A node in the Huffman tree
@@ -116,9 +117,10 @@ def get_file():
         filename = files[choice]
 
         # Read and print file content
-        with open(os.path.join("test_input", filename), 'rb') as f:
-            content = f.read()
-            print(f"Loading: {filename} ...\n")
+        content = pad_file(os.path.join("test_input", filename))
+        #with open(os.path.join("test_input", filename), 'rb') as f:
+        #    content = f.read()
+        #    print(f"Loading: {filename} ...\n")
     
     return content
 
