@@ -53,13 +53,13 @@ def build_huffman_tree(byte_frequencies):
     return heap[0]
 
 
-def generate_huffman_codes(node, prefix="", huffman_codes={}):
+def generate_huffman_codes(node, prefix=b"", huffman_codes={}):
     if node is None:
         return
     if node.byte is not None:
         huffman_codes[node.byte] = prefix
-    generate_huffman_codes(node.left, prefix + "0", huffman_codes)
-    generate_huffman_codes(node.right, prefix + "1", huffman_codes)
+    generate_huffman_codes(node.left, prefix + b"0", huffman_codes)
+    generate_huffman_codes(node.right, prefix + b"1", huffman_codes)
     return huffman_codes
 
 def huffman_encode(data):
@@ -70,7 +70,7 @@ def huffman_encode(data):
     if missing_bytes:
         print("Error: missing bytes:", set(missing_bytes))
         exit()
-    encoded_data = "".join(huffman_codes[byte] for byte in data)
+    encoded_data = b"".join(huffman_codes[byte] for byte in data)
     #for char, code in huffman_codes.items():
      #   print(f"Character: {char}, Code: {code}")
 
@@ -142,7 +142,7 @@ if __name__ == "__main__":
 
     decoded_data = huffman_decode(encoded_data, tree)
 
-    with open("text.khn", "w") as file:
+    with open("text.khn", "wb") as file:
         file.write(encoded_data)
 
     print("Original:", data)
